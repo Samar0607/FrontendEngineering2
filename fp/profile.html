@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile | Stellar Soles</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+
+  <div id="navbar"></div>
+
+  <div class="container mx-auto py-12">
+    <h1 class="text-3xl font-bold mb-6 text-center text-blue-700">My Profile</h1>
+
+    <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-lg space-y-6">
+      <section>
+        <h2 class="text-xl font-semibold mb-3">User Information</h2>
+        <p><strong>Name:</strong> <span id="userName"></span></p>
+        <p><strong>Email:</strong> <span id="userEmail"></span></p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold mb-3">Order History</h2>
+        <div id="orderHistory" class="space-y-4">
+          <!-- Orders will be loaded here -->
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="navbar.js"></script>
+  <script src="profile.js"></script>
+</body>
+</html>

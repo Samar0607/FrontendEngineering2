@@ -1,0 +1,66 @@
+const productGrid = document.getElementById("product-grid");
+
+let products = [];
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+async function fetchProducts() {
+  try {
+    const res = await fetch("http://localhost:3000/products");
+    products = await res.json();
+    renderProducts(products);
+  } catch (err) {
+    console.error(err);
+    productGrid.innerHTML = "<p class='text-red-600'>Failed to load products.</p>";
+  }
+}
+
+function renderProducts(list) {
+  productGrid.innerHTML = "";
+  list.forEach(product => {
+    const card = document.createElement("div");
+    card.className = "bg-white rounded-lg shadow-md flex flex-col";
+
+    card.innerHTML = `
+      <img src="${product.img}" alt="${product.name}" class="w-full h-56 object-cover rounded-t-lg">
+      <div class="p-4 flex flex-col flex-grow">
+        <h3 class="font-bold text-lg mb-2">${product.name}</h3>
+        <p class="text-gray-600 mb-2">₹${product.price}</p>
+        <select class="mb-2 border rounded p-1 size-select">
+          ${product.sizes.map(size => `<option>${size}</option>`).join('')}
+        </select>
+        <button class="mt-auto bg-blue-600 hover:bg-blue-700 text-white py-2 rounded add-to-cart" data-id="${product.id}">Add to Cart</button>
+      </div>
+    `;
+    productGrid.appendChild(card);
+  });
+
+  // Add to cart buttons
+  document.querySelectorAll(".add-to-cart").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      const id = e.target.dataset.id;
+      const size = e.target.previousElementSibling.value;
+      addToCart(id, size);
+    });
+  });
+}
+
+function addToCart(id, size) {
+  const product = products.find(p => p.id == id);
+  const item = { ...product, qty: 1, size };
+  cart.push(item);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  alert(`${product.name} added to cart!`);
+  updateCartCount();
+}
+
+// Filters
+document.getElementById("apply-filters").addEventListener("click", () => {
+  const gender = document.getElementById("filter-gender").value;
+  const occasion = document.getElementById("filter-occasion").value;
+  let filtered = products;
+  if (gender) filtered = filtered.filter(p => p.gender === gender);
+  if (occasion) filtered = filtered.filter(p => p.occasion === occasion);
+  renderProducts(filtered);
+});
+
+fetchProducts();
