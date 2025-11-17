@@ -1,46 +1,68 @@
-let cart = JSON.parse(localStorage.getItem("paymentCart")) || [];
-const paymentTable = document.getElementById("payment-table");
-const paymentForm = document.getElementById("paymentForm");
-const paymentStatus = document.getElementById("payment-status");
+document.addEventListener("DOMContentLoaded", () => {
+  const paymentCart = JSON.parse(localStorage.getItem("paymentCart")) || [];
+  const table = document.getElementById("payment-table");
 
-function renderPaymentTable() {
-  paymentTable.innerHTML = "";
-  let total = 0;
+  const user = JSON.parse(localStorage.getItem("user"));
+  if(!user) { alert("Login first"); window.location.href="login.html"; return; }
 
-  cart.forEach(item => {
+  // Render payment items
+  paymentCart.forEach(item => {
     const row = document.createElement("tr");
     row.innerHTML = `
-      <td class="py-3 flex items-center gap-3">
-        <img src="${item.img}" alt="${item.name}" class="w-16 h-16 rounded-lg object-cover">
-        <span>${item.name}</span>
-      </td>
-      <td class="py-3">${item.size}</td>
-      <td class="py-3">${item.qty}</td>
-      <td class="py-3 font-semibold">₹${item.price * item.qty}</td>
+      <td class="py-2 px-4">${item.name}</td>
+      <td class="py-2 px-4">${item.size}</td>
+      <td class="py-2 px-4">${item.qty}</td>
+      <td class="py-2 px-4">₹${item.price}</td>
     `;
-    paymentTable.appendChild(row);
-    total += item.price * item.qty;
+    table.appendChild(row);
   });
 
-  const totalRow = document.createElement("tr");
-  totalRow.innerHTML = `
-    <td colspan="3" class="py-3 font-bold text-right">Total</td>
-    <td class="py-3 font-bold text-blue-600">₹${total}</td>
-  `;
-  paymentTable.appendChild(totalRow);
-}
+  document.getElementById("paymentForm").addEventListener("submit", async e => {
+    e.preventDefault();
 
-paymentForm.addEventListener("submit", e => {
-  e.preventDefault();
-  paymentStatus.classList.remove("hidden");
+    // Dummy payment validation
+    const name = document.getElementById("name").value.trim();
+    const card = document.getElementById("card").value.trim();
+    const expiry = document.getElementById("expiry").value;
+    const cvv = document.getElementById("cvv").value.trim();
 
-  // Save orders to order history
-  const orders = JSON.parse(localStorage.getItem("orders")) || [];
-  localStorage.setItem("orders", JSON.stringify(orders.concat(cart)));
+    if(!name || !card || !expiry || !cvv) { alert("Fill all fields"); return; }
 
-  // Clear cart and paymentCart
-  localStorage.removeItem("paymentCart");
-  window.setTimeout(() => window.location.href="index.html", 3000);
+    // Generate order ID
+    const orderId = `ORD-${Date.now()}`;
+
+    const order = {
+      id: orderId,
+      userId: user.id,
+      items: paymentCart.map(i => ({id: i.id, name: i.name, size: i.size, quantity: i.qty, price: i.price})),
+      date: new Date().toISOString()
+    };
+
+    try {
+      const res = await fetch("http://localhost:3000/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(order)
+      });
+      if(!res.ok) throw new Error("Order failed");
+
+      // Remove paid items from main cart
+      let mainCart = JSON.parse(localStorage.getItem("cart")) || [];
+      mainCart = mainCart.filter(mc => !paymentCart.find(pc => pc.id === mc.id && pc.size === mc.size));
+      localStorage.setItem("cart", JSON.stringify(mainCart));
+
+      // Clear paymentCart
+      localStorage.removeItem("paymentCart");
+
+      document.getElementById("payment-status").classList.remove("hidden");
+
+      setTimeout(() => {
+        window.location.href = "profile.html";
+      }, 1500);
+
+    } catch(err) {
+      console.error(err);
+      alert("Payment failed. Try again.");
+    }
+  });
 });
-
-renderPaymentTable();

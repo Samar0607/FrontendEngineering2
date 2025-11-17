@@ -1,18 +1,6 @@
 {
   "users": [
     {
-      "id": "1",
-      "name": "Aarav Singh",
-      "email": "aarav@stellar.com",
-      "password": "5678"
-    },
-    {
-      "id": "2",
-      "name": "Samar",
-      "email": "fffff",
-      "password": "1234"
-    },
-    {
       "id": "3",
       "name": "remchan",
       "email": "samar672006@gmail.com",
@@ -29,6 +17,24 @@
       "name": "priyanshu",
       "email": "priyanshurana@gmail.com",
       "password": "ulisfer123A3"
+    },
+    {
+      "id": "ba0b",
+      "name": "Samar",
+      "email": "sama@gmail.com",
+      "password": "123456asd"
+    },
+    {
+      "id": "bab4",
+      "name": "Samar",
+      "email": "sama@gmail.com",
+      "password": "123456asd"
+    },
+    {
+      "id": "e23d",
+      "name": "raghav",
+      "email": "raghav@gmail.com",
+      "password": "12345raghav"
     }
   ],
   "products": [
@@ -426,6 +432,39 @@
         "UK 10",
         "UK 11"
       ]
+    }
+  ],
+  "orders": [
+    {
+      "id": "ORD-1763357190980",
+      "userId": "5",
+      "items": [
+        {
+          "id": "2",
+          "name": "Adidas Ultraboost",
+          "size": "UK 1",
+          "quantity": 1,
+          "price": 7299
+        }
+      ],
+      "date": "2025-11-17T05:26:30.980Z"
+    }
+  ],
+  "exchanges": [
+    {
+      "id": "EX1763357846149",
+      "orderId": "ORD-1763357190980",
+      "userId": "5",
+      "itemName": "addidas",
+      "reason": "wrong size",
+      "status": "Pending",
+      "createdAt": "2025-11-17T05:37:26.149Z"
+    }
+  ],
+  "newsletter": [
+    {
+      "id": "a624",
+      "email": "samar@gmail.com"
     }
   ]
 }

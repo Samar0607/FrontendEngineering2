@@ -39,10 +39,11 @@ document.getElementById("checkout-btn").addEventListener("click", () => {
   const checkboxes = document.querySelectorAll(".select-item");
   const selectedItems = cart.filter((_, i) => checkboxes[i].checked);
   if(selectedItems.length===0){ alert("Select at least one item"); return; }
+
+  // Only send selected items to payment page
   localStorage.setItem("paymentCart", JSON.stringify(selectedItems));
-  cart = cart.filter((_, i) => !checkboxes[i].checked);
-  localStorage.setItem("cart", JSON.stringify(cart));
-  renderCart();
+
+  // Keep them in main cart until payment succeeds
   window.location.href = "payment.html";
 });
 
